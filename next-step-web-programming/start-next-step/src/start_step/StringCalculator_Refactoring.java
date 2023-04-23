@@ -58,7 +58,7 @@ public class StringCalculator_Refactoring {
     // RuntimeException 처리
     private int toPositive(String value) {
         int number = Integer.parseInt(value);
-        if(number > 0) {
+        if(number < 0) {
             throw new RuntimeException();
         }
         return number;
