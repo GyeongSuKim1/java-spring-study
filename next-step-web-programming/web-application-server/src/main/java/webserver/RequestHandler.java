@@ -34,29 +34,20 @@ public class RequestHandler extends Thread {
             // byte array로 변환 후 body에 넣어줌
             byte[] body = Files.readAllBytes(new File("./webapp" + url(token)).toPath());
 
-            if (url(token).contains(".css")) response200CssHeader(dos, body.length);
-            else response200Header(dos, body.length);
+            String ext = url(token).substring(url(token).lastIndexOf(".") + 1); // 확장자 추출
+
+            response200Header(dos, body.length, ext);
             responseBody(dos, body);
+
         } catch (IOException e) {
             log.error(e.getMessage());
         }
     }
 
-    private void response200Header(DataOutputStream dos, int lengthOfBodyContent) {
+    private void response200Header(DataOutputStream dos, int lengthOfBodyContent, String ext) {
         try {
             dos.writeBytes("HTTP/1.1 200 OK \r\n");
-            dos.writeBytes("Content-Type: text/html;charset=utf-8\r\n");
-            dos.writeBytes("Content-Length: " + lengthOfBodyContent + "\r\n");
-            dos.writeBytes("\r\n");
-        } catch (IOException e) {
-            log.error(e.getMessage());
-        }
-    }
-
-    private void response200CssHeader(DataOutputStream dos, int lengthOfBodyContent) {
-        try {
-            dos.writeBytes("HTTP/1.1 200 OK \r\n");
-            dos.writeBytes("Content-Type: text/css;charset=utf-8\r\n");
+            dos.writeBytes("Content-Type: text/" + ext + ";charset=utf-8\r\n");
             dos.writeBytes("Content-Length: " + lengthOfBodyContent + "\r\n");
             dos.writeBytes("\r\n");
         } catch (IOException e) {
