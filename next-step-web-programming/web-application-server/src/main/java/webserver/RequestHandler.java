@@ -3,12 +3,14 @@ package webserver;
 import java.io.*;
 import java.net.Socket;
 import java.nio.file.Files;
+import java.util.HashMap;
 import java.util.Map;
 
 import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.HttpRequestUtils;
+import util.IOUtils;
 
 public class RequestHandler extends Thread {
     private static final Logger log = LoggerFactory.getLogger(RequestHandler.class);
@@ -33,23 +35,31 @@ public class RequestHandler extends Thread {
             if (token == null) return; // 헤더가 null일 경우 응답x
 
             String url = splitUrl(token);
-            log.info("ㅡ url : {}", url);
 
+            Map<String, String> headers = new HashMap<String, String>();
+            while (!"".equals(token)) {
+                token = br.readLine();
+                String[] headerTokens = token.split(": ");
+
+                if (headerTokens.length == 2) headers.put(headerTokens[0], headerTokens[1]);
+            }
+            log.debug("ㅡㅡ Content-Length : {}", headers.get("Content-Length"));
+
+
+            String ext = url.substring(url.lastIndexOf(".") + 1); // 확장자 추출
+            log.info("ㅡ ext : {}", ext);
+
+            /**
+             *  POST 회원가입
+             */
             // user/create로 시작하면 조건문 실행
             if (url.startsWith("/user/create")) {
 
-                // index 12
-                int index = url.indexOf("?");
-//                log.info("ㅡ index : {}", index);
-
-                // url뒤 파라미터를 꺼내옴
-                // Ex) userId=a&password=a&name=a&email=a%40a.a
-                String param = url.substring(index + 1);
-//                log.info("ㅡ param : {}", param);
+                String bodyData = IOUtils.readData(br, Integer.parseInt(headers.get("Content-Length")));
+                log.debug("Request Body : {}", bodyData);
 
                 // Map으로 파싱해줌
-                Map<String, String> params = HttpRequestUtils.parseQueryString(param);
-//                log.info("ㅡ params : {}", params);
+                Map<String, String> params = HttpRequestUtils.parseQueryString(bodyData);
 
                 // params의 key값을 이용하여 User안에 넣어줌
                 User user = new User(
@@ -60,19 +70,12 @@ public class RequestHandler extends Thread {
                 );
                 log.info("ㅡ User : {}", user);
 
-                // 회원가입을 하였으니 index.html로 return
                 url = "/index.html";
             }
-
-
-            String ext = url.substring(url.lastIndexOf(".") + 1); // 확장자 추출
-            log.info("ㅡ ext : {}", ext);
-
-            // byte array로 변환 후 body에 넣어줌
-            byte[] body = Files.readAllBytes(new File("./webapp" + url).toPath());
-            response200Header(dos, body.length, ext);
-            responseBody(dos, body);
-
+                // byte array로 변환 후 body에 넣어줌
+                byte[] body = Files.readAllBytes(new File("./webapp" + url).toPath());
+                response200Header(dos, body.length, ext);
+                responseBody(dos, body);
         } catch (IOException e) {
             log.error(e.getMessage());
         }
