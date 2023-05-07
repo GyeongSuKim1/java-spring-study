@@ -2,7 +2,9 @@ package webserver;
 
 import java.io.*;
 import java.net.Socket;
+import java.net.URLDecoder;
 import java.nio.file.Files;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,6 +41,9 @@ public class RequestHandler extends Thread {
             String url = splitUrl(token);
             log.info("ㅡ URL : {}", url);
 
+            String ext = url.substring(url.lastIndexOf(".") + 1); // 확장자 추출
+//            log.info("ㅡ ext : {}", ext);
+
             Map<String, String> headers = new HashMap<String, String>();
             while (!"".equals(token)) {
                 // 한줄씩 읽음
@@ -52,8 +57,6 @@ public class RequestHandler extends Thread {
 //            log.debug("ㅡㅡ Content-Length : {}", headers.get("Content-Length"));
 
 
-            String ext = url.substring(url.lastIndexOf(".") + 1); // 확장자 추출
-//            log.info("ㅡ ext : {}", ext);
 
             /**
              *  POST 회원가입
@@ -79,9 +82,9 @@ public class RequestHandler extends Thread {
                 DataBase.addUser(user);
                 response302Header(dos);
 
-                /**
-                 * Login
-                 */
+            /**
+             * Login
+             */
             } else if (url.equals("/user/login")) {
 
                 // 바디를 읽을 수 있게 문자열로 변환
@@ -93,21 +96,64 @@ public class RequestHandler extends Thread {
 
                 // 유저 아이디
                 User user = DataBase.findUserById(params.get("userId"));
+                String cookie = "";
+                String redirectUrl = "";
 
-                if (user == null) {
+                // 로그인 실패
+                if (user == null || !user.getPassword().equals(params.get("password"))) {
 
                     log.debug("not Found");
-                    response302Header(dos);
-                } else if(user.getPassword().equals(params.get("password"))) {
+                    response302LoginCookie(dos, "/user/login_failed.html", "logined=false");
+                    cookie = "logined=false";
+                    redirectUrl = "/user/login_failed.html";
+
+                // 로그인 성공
+                } else if (user.getPassword().equals(params.get("password"))) {
 
                     log.debug("sucess");
-                    response302LoginCookie(dos, "logined=true");
+                    cookie = "logined=true";
+                    redirectUrl = "/index.html";
+//                    response302LoginCookie(dos, "index.html", "logined=true");
+                }
+                response302LoginCookie(dos, redirectUrl, cookie);
+
+            /**
+             * 사용자 목록 출력
+             */
+            } else if (url.startsWith("/user/list")) {
+
+                Map<String, String> cookies = HttpRequestUtils.parseCookies(headers.get("Cookie"));
+
+                // logined
+                if (cookies.get("logined") == null || !Boolean.parseBoolean(cookies.get("logined"))) {
+
+                    response302Header(dos);
                 } else {
 
-                    log.debug("not Password");
-                    response302LoginCookie(dos, "logined=false");
-                }
+                    int idx = 3;
 
+                    Collection<User> userList = DataBase.findAll();
+                    StringBuilder sb = new StringBuilder();
+
+                    for (User user : userList) {
+                        sb.append("<tr>" +
+                                "<th scope=\"row\">" + idx + "</th>" +
+                                "<td>" + user.getUserId() + "</td> " +
+                                "<td>" + user.getName() + "</td> " +
+                                "<td>" + user.getEmail() + "</td>" +
+                                "<td><a href=\"#\" class=\"btn btn-success\" role=\"button\">수정</a></td>" +
+                                "</tr>");
+                        idx++;
+                    }
+
+                    String fileData = new String(Files.readAllBytes(new File("./webapp" + url).toPath()));
+                    fileData = fileData.replace("%user_list%", URLDecoder.decode(sb.toString(), "UTF-8"));
+
+                    byte[] body = fileData.getBytes();
+                    response200Header(dos, body.length, ext);
+                    responseBody(dos, body);
+
+                }
             } else {
 
                 // byte array로 변환 후 body에 넣어줌
@@ -141,11 +187,11 @@ public class RequestHandler extends Thread {
         }
     }
 
-    private void response302LoginCookie(DataOutputStream dos, String cookie) {
+    private void response302LoginCookie(DataOutputStream dos, String redirectUrl, String cookie) {
         try {
             dos.writeBytes("HTTP/1.1 302 Found \r\n");
-            dos.writeBytes("Set-Cookie: " + cookie +"\r\n");
-            dos.writeBytes("Location: /index.html\r\n");
+            dos.writeBytes("Location: " + redirectUrl + "\r\n");
+            dos.writeBytes("Set-Cookie: " + cookie + "\r\n");
             dos.writeBytes("\r\n");
         } catch (IOException e) {
             log.error(e.getMessage());
