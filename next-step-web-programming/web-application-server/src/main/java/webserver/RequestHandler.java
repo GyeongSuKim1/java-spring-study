@@ -6,6 +6,7 @@ import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
 
+import db.DataBase;
 import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,20 +35,25 @@ public class RequestHandler extends Thread {
             String token = br.readLine();
             if (token == null) return; // 헤더가 null일 경우 응답x
 
+            // request url 추출
             String url = splitUrl(token);
+            log.info("ㅡ URL : {}", url);
 
             Map<String, String> headers = new HashMap<String, String>();
             while (!"".equals(token)) {
+                // 한줄씩 읽음
                 token = br.readLine();
+                // 문자열 ": " 기준으로 분리
                 String[] headerTokens = token.split(": ");
 
+                // 헤더 바디를 Map 파싱
                 if (headerTokens.length == 2) headers.put(headerTokens[0], headerTokens[1]);
             }
-            log.debug("ㅡㅡ Content-Length : {}", headers.get("Content-Length"));
+//            log.debug("ㅡㅡ Content-Length : {}", headers.get("Content-Length"));
 
 
             String ext = url.substring(url.lastIndexOf(".") + 1); // 확장자 추출
-            log.info("ㅡ ext : {}", ext);
+//            log.info("ㅡ ext : {}", ext);
 
             /**
              *  POST 회원가입
@@ -55,8 +61,9 @@ public class RequestHandler extends Thread {
             // user/create로 시작하면 조건문 실행
             if (url.startsWith("/user/create")) {
 
+                // 바디를 읽을 수 있게 문자열로 변환
                 String bodyData = IOUtils.readData(br, Integer.parseInt(headers.get("Content-Length")));
-                log.debug("Request Body : {}", bodyData);
+//                log.debug("Create Request Content-Length : {}", bodyData);
 
                 // Map으로 파싱해줌
                 Map<String, String> params = HttpRequestUtils.parseQueryString(bodyData);
@@ -68,8 +75,39 @@ public class RequestHandler extends Thread {
                         params.get("name"),
                         params.get("email")
                 );
-                log.info("ㅡ User : {}", user);
+                log.info("ㅡ create User : {}", user);
+                DataBase.addUser(user);
                 response302Header(dos);
+
+                /**
+                 * Login
+                 */
+            } else if (url.equals("/user/login")) {
+
+                // 바디를 읽을 수 있게 문자열로 변환
+                String bodyData = IOUtils.readData(br, Integer.parseInt(headers.get("Content-Length")));
+//                log.debug("Login Request Content-Length : {}", bodyData);
+
+                Map<String, String> params = HttpRequestUtils.parseQueryString(bodyData);
+                log.info("ㅡ userId : {}, password : {}", params.get("userId"), params.get("password"));
+
+                // 유저 아이디
+                User user = DataBase.findUserById(params.get("userId"));
+
+                if (user == null) {
+
+                    log.debug("not Found");
+                    response302Header(dos);
+                } else if(user.getPassword().equals(params.get("password"))) {
+
+                    log.debug("sucess");
+                    response302LoginCookie(dos, "logined=true");
+                } else {
+
+                    log.debug("not Password");
+                    response302LoginCookie(dos, "logined=false");
+                }
+
             } else {
 
                 // byte array로 변환 후 body에 넣어줌
@@ -96,6 +134,17 @@ public class RequestHandler extends Thread {
     private void response302Header(DataOutputStream dos) {
         try {
             dos.writeBytes("HTTP/1.1 302 Found \r\n");
+            dos.writeBytes("Location: /index.html\r\n");
+            dos.writeBytes("\r\n");
+        } catch (IOException e) {
+            log.error(e.getMessage());
+        }
+    }
+
+    private void response302LoginCookie(DataOutputStream dos, String cookie) {
+        try {
+            dos.writeBytes("HTTP/1.1 302 Found \r\n");
+            dos.writeBytes("Set-Cookie: " + cookie +"\r\n");
             dos.writeBytes("Location: /index.html\r\n");
             dos.writeBytes("\r\n");
         } catch (IOException e) {
