@@ -69,13 +69,14 @@ public class RequestHandler extends Thread {
                         params.get("email")
                 );
                 log.info("ㅡ User : {}", user);
+                response302Header(dos);
+            } else {
 
-                url = "/index.html";
-            }
                 // byte array로 변환 후 body에 넣어줌
                 byte[] body = Files.readAllBytes(new File("./webapp" + url).toPath());
                 response200Header(dos, body.length, ext);
                 responseBody(dos, body);
+            }
         } catch (IOException e) {
             log.error(e.getMessage());
         }
@@ -86,6 +87,16 @@ public class RequestHandler extends Thread {
             dos.writeBytes("HTTP/1.1 200 OK \r\n");
             dos.writeBytes("Content-Type: text/" + ext + ";charset=utf-8\r\n");
             dos.writeBytes("Content-Length: " + lengthOfBodyContent + "\r\n");
+            dos.writeBytes("\r\n");
+        } catch (IOException e) {
+            log.error(e.getMessage());
+        }
+    }
+
+    private void response302Header(DataOutputStream dos) {
+        try {
+            dos.writeBytes("HTTP/1.1 302 Found \r\n");
+            dos.writeBytes("Location: /index.html\r\n");
             dos.writeBytes("\r\n");
         } catch (IOException e) {
             log.error(e.getMessage());
