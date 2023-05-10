@@ -1,4 +1,4 @@
 package com.example.onehoursimpleproject.mvc.repository.impl;
 
-public class UserRepositoryImpl {
+public class MemberRepositoryImpl {
 }
