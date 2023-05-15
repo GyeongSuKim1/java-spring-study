@@ -6,7 +6,7 @@ import webserver.RequestHandler;
 
 import java.io.*;
 
-public class HttpResponseUtil {
+public class HttpResponseUtils {
 
     private static final Logger log = LoggerFactory.getLogger(RequestHandler.class);
 

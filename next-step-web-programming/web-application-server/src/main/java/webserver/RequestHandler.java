@@ -13,7 +13,7 @@ import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.HttpRequestUtils;
-import util.HttpResponseUtil;
+import util.HttpResponseUtils;
 import util.IOUtils;
 
 public class RequestHandler extends Thread {
@@ -53,8 +53,8 @@ public class RequestHandler extends Thread {
             } else {
                 // byte array로 변환 후 body에 넣어줌
                 byte[] body = Files.readAllBytes(new File("./webapp" + url).toPath());
-                HttpResponseUtil.response200Header(dos, body.length, ext);
-                HttpResponseUtil.responseBody(dos, body);
+                HttpResponseUtils.response200Header(dos, body.length, ext);
+                HttpResponseUtils.responseBody(dos, body);
             }
         } catch (IOException e) {
             log.error(e.getMessage());
@@ -114,7 +114,7 @@ public class RequestHandler extends Thread {
         );
         log.info("ㅡ create User : {}", user);
         DataBase.addUser(user);
-        HttpResponseUtil.response302Header(dos);
+        HttpResponseUtils.response302Header(dos);
     }
 
     /**
@@ -138,7 +138,7 @@ public class RequestHandler extends Thread {
         if (user == null || !user.getPassword().equals(params.get("password"))) {
 
             log.debug("not Found");
-            HttpResponseUtil.response302LoginCookie(dos, "/user/login_failed.html", "logined=false");
+            HttpResponseUtils.response302LoginCookie(dos, "/user/login_failed.html", "logined=false");
             cookie = "logined=false";
             redirectUrl = "/user/login_failed.html";
 
@@ -150,7 +150,7 @@ public class RequestHandler extends Thread {
             redirectUrl = "/index.html";
 //                    response302LoginCookie(dos, "index.html", "logined=true");
         }
-        HttpResponseUtil.response302LoginCookie(dos, redirectUrl, cookie);
+        HttpResponseUtils.response302LoginCookie(dos, redirectUrl, cookie);
     }
 
     /**
@@ -163,7 +163,7 @@ public class RequestHandler extends Thread {
         // logined
         if (cookies.get("logined") == null || !Boolean.parseBoolean(cookies.get("logined"))) {
 
-            HttpResponseUtil.response302Header(dos);
+            HttpResponseUtils.response302Header(dos);
         } else {
 
             int idx = 3;
@@ -186,8 +186,8 @@ public class RequestHandler extends Thread {
             fileData = fileData.replace("%user_list%", URLDecoder.decode(sb.toString(), "UTF-8"));
 
             byte[] body = fileData.getBytes();
-            HttpResponseUtil.response200Header(dos, body.length, ext);
-            HttpResponseUtil.responseBody(dos, body);
+            HttpResponseUtils.response200Header(dos, body.length, ext);
+            HttpResponseUtils.responseBody(dos, body);
 
         }
 
