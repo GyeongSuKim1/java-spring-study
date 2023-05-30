@@ -13,9 +13,10 @@ public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
 
     @Override
-    public String join(String name, String phone) {
+    public String join(String id, String name, String phone) {
 
         Member member = Member.builder()
+                .id(id)
                 .name(name)
                 .phone(phone)
                 .build();

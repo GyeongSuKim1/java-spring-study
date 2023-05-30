@@ -18,6 +18,8 @@ public class Member {
     @Id
     private Long idx;
 
+    private String id;
+
     private String name;
 
     private String phone;

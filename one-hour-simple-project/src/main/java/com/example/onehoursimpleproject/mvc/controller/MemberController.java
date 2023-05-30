@@ -22,10 +22,11 @@ public class MemberController {
     @RequestMapping(value = "/join", method = RequestMethod.POST)
     public String join(@RequestBody JoinRequest request) {
 
+        String id = request.getId();
         String name = request.getName();
         String phone = request.getPhone();
 
-        String result = memberService.join(name, phone);
+        String result = memberService.join(id, name, phone);
 
         if (result.equalsIgnoreCase("success")) {
             return "success";
