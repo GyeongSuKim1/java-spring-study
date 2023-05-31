@@ -1,4 +1,8 @@
 package com.example.onehoursimpleproject.mvc.repository;
 
-public interface MemberRepository {
+import com.example.onehoursimpleproject.domain.entity.Member;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface MemberRepository extends JpaRepository<Member, Long> {
+
 }
