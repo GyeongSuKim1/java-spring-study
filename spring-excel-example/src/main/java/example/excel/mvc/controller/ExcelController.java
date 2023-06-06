@@ -1,6 +1,5 @@
-package example.excel.controller;
+package example.excel.mvc.controller;
 
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -12,28 +11,30 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 @Controller
-public class MainController {
-
-    @RequestMapping(value = "/", method = RequestMethod.GET)
-    public String home() {
-        return "home";
-    }
+public class ExcelController {
 
     // 예제 1
     @RequestMapping(value = "/excel/download", method = RequestMethod.GET)
     public void excelDownload(HttpServletResponse response) throws IOException {
+
+        LocalDate now = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        String formatedNow = now.format(formatter);
+        System.out.println("time : " + formatedNow);
 
 //        Workbook wb = new HSSFWorkbook();
         Workbook wb = new XSSFWorkbook();
         Sheet sheet = wb.createSheet();
         Row row = null;
         Cell cell = null;
-        int rowNum = 0;
+        int rowIndex = 0;
 
         // Header
-        row = sheet.createRow(rowNum++);
+        row = sheet.createRow(rowIndex++);
         cell = row.createCell(0);
         cell.setCellValue("번호");
 
@@ -43,9 +44,12 @@ public class MainController {
         cell = row.createCell(2);
         cell.setCellValue("제목");
 
+        cell = row.createCell(3);
+        cell.setCellValue(formatedNow);
+
         // Body
         for (int i = 0; i < 3; i++) {
-            row = sheet.createRow(rowNum++);
+            row = sheet.createRow(rowIndex++);
             cell = row.createCell(0);
             cell.setCellValue(i);
 
@@ -65,4 +69,14 @@ public class MainController {
         wb.write(response.getOutputStream());
         wb.close();
     }
+
+    // 예제 2
+    @RequestMapping(value = "/excel/download/v2", method = RequestMethod.GET)
+    public void excelDownloadV2(HttpServletResponse response) {
+
+        Workbook wb = new XSSFWorkbook();
+        Sheet sheet = wb.createSheet();
+
+    }
+
 }
