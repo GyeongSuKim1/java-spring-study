@@ -17,11 +17,23 @@ public class HelloController {
         return "hello";
     }
 
+    /**
+     * MVC 템플릿 엔진
+     */
     @RequestMapping(value = "/hello-mvc", method = RequestMethod.GET)
     public String helloMvc(@RequestParam(value = "name") String name, Model model) {
 
         model.addAttribute("name", name);
 
         return "hello-template";
+    }
+
+    /**
+     * @Response 문자 반환
+     */
+    @RequestMapping(value = "/hello-string", method = RequestMethod.GET)
+    @ResponseBody
+    public String helloString(@RequestParam("name") String name) {
+        return "hello " + name;
     }
 }
