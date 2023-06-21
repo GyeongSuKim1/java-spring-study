@@ -29,11 +29,36 @@ public class HelloController {
     }
 
     /**
-     * @Response 문자 반환
+     * @ResponseBody 문자 반환
      */
     @RequestMapping(value = "/hello-string", method = RequestMethod.GET)
     @ResponseBody
     public String helloString(@RequestParam("name") String name) {
-        return "hello " + name;
+        return "hello [ " + name + " ]";
+    }
+
+    /**
+     * @ResponseBody 객체 반환
+     */
+    @RequestMapping(value = "/hello-api", method = RequestMethod.GET)
+    @ResponseBody
+    public Hello helloApi(@RequestParam("name") String name) {
+        Hello hello = new Hello();
+        hello.setName(name);
+
+        return hello;
+    }
+
+
+    static class Hello {
+        private String name;
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
     }
 }
