@@ -1,9 +1,9 @@
 package spring.sheet.domain.db;
 
-import example.excel.domain.entity.Article;
-import example.excel.mvc.repository.ArticleRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
+import spring.sheet.domain.entity.ArticleEntity;
+import spring.sheet.mvc.repository.ArticleRepository;
 
 @Component
 public class DataInitializer implements CommandLineRunner {
@@ -18,7 +18,7 @@ public class DataInitializer implements CommandLineRunner {
     public void run(String... args) throws Exception {
 
         for (int i = 1; i <= 53; i++) {
-            Article initData = new Article();
+            ArticleEntity initData = new ArticleEntity();
             initData.setTitle(i + " 제목 입니다.");
             initData.setContent(i + " 설명 입니다.");
             articleRepository.save(initData);
