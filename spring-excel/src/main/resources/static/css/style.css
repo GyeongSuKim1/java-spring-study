@@ -7,3 +7,10 @@ td, th {
     border: 1px solid gray;
     padding: 50px;
 }
+
+.date {
+    width: 80px;
+    height: 30px;
+
+    margin-top: 20px;
+}

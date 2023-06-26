@@ -5,6 +5,10 @@
   <meta charset="UTF-8">
   <title>Title</title>
 
+  <link rel="stylesheet" href="http://code.jquery.com/ui/1.8.18/themes/base/jquery-ui.css" type="text/css" />
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+  <script src="http://code.jquery.com/ui/1.8.18/jquery-ui.min.js"></script>
+
   <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
@@ -17,6 +21,8 @@
     <form action="/excel/download" method="get">
       <button type="submit" style="padding: 15px; margin: 15px;">Excel-V1</button>
     </form>
+
+    <input type="text" name="date" id="datePicker" class="date">
 
     <form action="/add" method="get">
       <button type="submit" style="padding: 15px; margin: 15px;">게시글 추가</button>
@@ -43,6 +49,7 @@
     </tbody>
   </table>
 
+  <script src="/js/comm.js"></script>
 
 </div>
 
