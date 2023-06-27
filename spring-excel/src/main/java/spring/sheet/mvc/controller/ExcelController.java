@@ -6,18 +6,30 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import spring.sheet.domain.entity.ArticleEntity;
+import spring.sheet.mvc.service.ArticleService;
+import spring.sheet.util.ExcelCreator;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @Controller
 @Slf4j
 public class ExcelController {
+
+    private final ArticleService articleService;
+
+    public ExcelController(ArticleService articleService) {
+        this.articleService = articleService;
+    }
 
     // 예제
     @RequestMapping(value = "/excel/download", method = RequestMethod.GET)
@@ -70,5 +82,15 @@ public class ExcelController {
         // Excel File Output
         wb.write(response.getOutputStream());
         wb.close();
+    }
+
+    /**
+     * 게시글 Excel
+     */
+    @RequestMapping(value = "article/excel", method = RequestMethod.GET)
+    public void articleExcelDownload(HttpServletResponse response, @Param("date") String date) throws IOException {
+
+        new ExcelCreator(articleService).createExcel(response, date);
+
     }
 }
