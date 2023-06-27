@@ -68,10 +68,10 @@ public class ExcelController {
             cell.setCellValue(i);
 
             cell = row.createCell(1);
-            cell.setCellValue(i + "_name");
+            cell.setCellValue(i + "_title 샘플");
 
             cell = row.createCell(2);
-            cell.setCellValue(i + "_title");
+            cell.setCellValue(i + "_content 샘플");
         }
 
         // 컨텐츠 타입과 파일명 지정
