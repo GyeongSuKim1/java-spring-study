@@ -87,7 +87,7 @@ public class ExcelController {
     /**
      * 게시글 Excel
      */
-    @RequestMapping(value = "article/excel", method = RequestMethod.GET)
+    @RequestMapping(value = "article/excel", method = RequestMethod.POST)
     public void articleExcelDownload(HttpServletResponse response, @Param("date") String date) throws IOException {
 
         new ExcelCreator(articleService).createExcel(response, date);
