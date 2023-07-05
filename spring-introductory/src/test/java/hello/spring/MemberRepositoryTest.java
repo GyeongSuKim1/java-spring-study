@@ -2,7 +2,6 @@ package hello.spring;
 
 import hello.spring.domain.entity.Member;
 import hello.spring.mvc.repository.impl.MemberRepositoryImpl;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
