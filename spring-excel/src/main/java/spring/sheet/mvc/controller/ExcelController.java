@@ -10,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import spring.sheet.domain.entity.ArticleEntity;
 import spring.sheet.mvc.service.ArticleService;
 import spring.sheet.util.ExcelCreator;
@@ -87,8 +88,8 @@ public class ExcelController {
     /**
      * 게시글 Excel
      */
-    @RequestMapping(value = "article/excel", method = RequestMethod.POST)
-    public void articleExcelDownload(HttpServletResponse response, @Param("date") String date) throws IOException {
+    @RequestMapping(value = "article/excel", method = RequestMethod.GET)
+    public void articleExcelDownload(HttpServletResponse response, @RequestParam String date) throws IOException {
 
         new ExcelCreator(articleService).createExcel(response, date);
 
