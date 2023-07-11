@@ -32,6 +32,19 @@ public class ArticleController {
     }
 
     /**
+     * 메인 PageV2
+     */
+//    @RequestMapping(value = "/", method = RequestMethod.GET)
+//    public ModelAndView homeV2(String keyword) {
+//        ModelAndView mav = new ModelAndView("index");
+//
+//        if (keyword == null || keyword.isEmpty()) mav.addObject("list", articleService.articleList());
+//        else mav.addObject("list", articleService.serchPosts(keyword));
+//
+//        return mav;
+//    }
+
+    /**
      * 게시글 작성 Page
      */
     @RequestMapping(value = "add", method = RequestMethod.GET)
