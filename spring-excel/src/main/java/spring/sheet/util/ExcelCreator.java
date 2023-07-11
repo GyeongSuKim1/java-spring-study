@@ -57,8 +57,8 @@ public class ExcelCreator {
 
         log.info("선택 날짜 : {}", date);
 
-        row = sheet.createRow(rowIndex++);
-        row = sheet.createRow(rowIndex++);
+//        row = sheet.createRow(rowIndex++);
+        row = sheet.createRow(1 + rowIndex++);
         cell = row.createCell(0);
         cell.setCellValue("번호");
 
