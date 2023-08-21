@@ -1,0 +1,10 @@
+package hello.core.service;
+
+import hello.core.domain.entity.Member;
+
+public interface MemberService {
+
+    void join(Member member);
+
+    Member findMember(Long memberId);
+}
