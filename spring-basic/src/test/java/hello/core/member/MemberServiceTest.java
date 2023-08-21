@@ -1,7 +1,8 @@
-package hello.core.service;
+package hello.core.member;
 
 import hello.core.domain.entity.Member;
 import hello.core.domain.type.Grade;
+import hello.core.service.MemberService;
 import hello.core.service.impl.MemberServiceImpl;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
