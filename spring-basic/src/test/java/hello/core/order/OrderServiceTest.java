@@ -1,10 +1,12 @@
-package hello.core.service;
+package hello.core.order;
 
 import hello.core.domain.entity.Member;
 import hello.core.domain.entity.Order;
 import hello.core.domain.type.Grade;
 import hello.core.repository.MemberRepository;
 import hello.core.repository.impl.MemberRepositoryImpl;
+import hello.core.service.MemberService;
+import hello.core.service.OrderService;
 import hello.core.service.impl.MemberServiceImpl;
 import hello.core.service.impl.OrderServiceImpl;
 import org.junit.jupiter.api.DisplayName;
@@ -30,7 +32,7 @@ class OrderServiceTest {
 
         // then
         assertEquals(order.getDiscountPrice(), 1000);
-        System.out.println("order = " + order);
+        System.out.println(order);
 
     }
 }
