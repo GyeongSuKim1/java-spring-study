@@ -15,7 +15,6 @@ import util.IOUtils;
 
 public class RequestHandler extends Thread {
     private static final Logger log = LoggerFactory.getLogger(RequestHandler.class);
-
     private Socket connection;
 
     public RequestHandler(Socket connectionSocket) {
@@ -27,6 +26,7 @@ public class RequestHandler extends Thread {
                 connection.getPort());
 
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
+
             // TODO 사용자 요청에 대한 처리는 이 곳에 구현하면 된다.
             BufferedReader br = new BufferedReader(new InputStreamReader(in, "UTF-8"));
 
@@ -150,16 +150,22 @@ public class RequestHandler extends Thread {
         }
     }
 
-    private void response200Header(DataOutputStream dos, int lengthOfBodyContent) {
-        try {
-            dos.writeBytes("HTTP/1.1 200 OK \r\n");
-            dos.writeBytes("Content-Type: text/html;charset=utf-8\r\n");
-            dos.writeBytes("Content-Length: " + lengthOfBodyContent + "\r\n");
-            dos.writeBytes("\r\n");
-        } catch (IOException e) {
-            log.error(e.getMessage());
-        }
-    }
+            String token = br.readLine();
+            String url = Utility.splitUrl(token);   // reuqest url 추출
+            String ext = url.substring(url.lastIndexOf(".") + 1); // 확장자 추출
+
+            Map<String, String> headers = Utility.readHeaders(br, token);
+
+            Utility.nullCheck(token); // 헤더가 null일 경우 응답x
+
+            if (url.startsWith("/user/create")) {
+                CRUDUtils.createUser(dos, br, headers);
+
+            } else if (url.equals("/user/login")) {
+                CRUDUtils.loginUser(dos, br, headers);
+
+            } else if (url.startsWith("/user/list")) {
+                CRUDUtils.userList(dos, br, headers, ext, url);
 
     private void response302Header(DataOutputStream dos, String url) {
         try {
@@ -185,3 +191,4 @@ public class RequestHandler extends Thread {
         return Integer.parseInt(headerTokens[1].trim());
     }
 }
+
