@@ -4,11 +4,15 @@ import hello.core.domain.entity.Member;
 import hello.core.repository.MemberRepository;
 import hello.core.repository.impl.MemberRepositoryImpl;
 import hello.core.service.MemberService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class MemberServiceImpl implements MemberService {
 
     private final MemberRepository memberRepository;
 
+    @Autowired
     public MemberServiceImpl(MemberRepository memberRepository) {
         this.memberRepository = memberRepository;
     }

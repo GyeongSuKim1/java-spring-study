@@ -3,7 +3,9 @@ package hello.core.discount.impl;
 import hello.core.discount.DiscountPolicy;
 import hello.core.domain.entity.Member;
 import hello.core.domain.type.Grade;
+import org.springframework.stereotype.Component;
 
+@Component
 public class RateDiscountPolicyImpl implements DiscountPolicy {
 
     private int discountFixAmount = 10; //10% 할인 금액
