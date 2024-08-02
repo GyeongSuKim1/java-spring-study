@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 public class StockService {
     private final StockRepository stockRepository;
 
-    public StockService(StockRepository stockRepository) {
+    public StockService(final StockRepository stockRepository) {
         this.stockRepository = stockRepository;
     }
 

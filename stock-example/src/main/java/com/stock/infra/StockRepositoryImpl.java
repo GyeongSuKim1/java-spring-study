@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 public class StockRepositoryImpl implements StockRepository {
     private final JpaStockRepository jpaStockRepository;
 
-    public StockRepositoryImpl(JpaStockRepository jpaStockRepository) {
+    public StockRepositoryImpl(final JpaStockRepository jpaStockRepository) {
         this.jpaStockRepository = jpaStockRepository;
     }
 
