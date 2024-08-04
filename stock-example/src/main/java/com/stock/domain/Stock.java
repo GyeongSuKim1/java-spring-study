@@ -19,9 +19,13 @@ public class Stock {
     public Stock() {
     }
 
-    public Stock(Long quantity, Long productId) {
-        this.quantity = quantity;
+    public Stock(Long productId, Long quantity) {
         this.productId = productId;
+        this.quantity = quantity;
+    }
+
+    public static Stock of(final Long productId, final Long quantity) {
+        return new Stock(productId, quantity);
     }
 
     public Long getId() {
@@ -34,5 +38,12 @@ public class Stock {
 
     public Long getQuantity() {
         return quantity;
+    }
+
+    public void decreaseQuantity(final Long quantity) {
+        if (this.quantity - quantity < 0) {
+            throw new RuntimeException("재고는 0개 미만이 될 수 없습니다.");
+        }
+        this.quantity -= quantity;
     }
 }
