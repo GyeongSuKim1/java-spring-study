@@ -17,12 +17,12 @@ public class JpaMain {
         tx.begin();
 
         try {
-            // Member 객체 생성
+            // Member 객체 생성 *비영속 상태
             final Member memberToSave = new Member();
             memberToSave.setId(1L);
             memberToSave.setName("Kim");
 
-            // 저장
+            // 저장 *영속 상태
             em.persist(memberToSave);
 
             // 조회
