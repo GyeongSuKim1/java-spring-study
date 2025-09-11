@@ -1,2 +1,13 @@
 server:
   port: 9000
+spring:
+  application:
+    name: gs-board-article-service
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.MySQLDialect
+    open-in-view: false
+    show-sql: true
+    hibernate:
+      ddl-auto: none
