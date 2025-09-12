@@ -37,7 +37,7 @@ public class ArticleController {
     }
 
     @DeleteMapping("/v1/article/{articleId}")
-    public ArticleResponse delete(@PathVariable final Long articleId) {
-        return delete(articleId);
+    public void delete(@PathVariable final Long articleId) {
+        articleService.delete(articleId);
     }
 }

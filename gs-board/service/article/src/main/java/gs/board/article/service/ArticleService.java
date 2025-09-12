@@ -6,9 +6,11 @@ import gs.board.article.service.request.ArticleCreateRequest;
 import gs.board.article.service.request.ArticleUpdateRequest;
 import gs.board.article.service.response.ArticleResponse;
 import kuke.board.common.snowflake.Snowflake;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 public class ArticleService {
     private final Snowflake snowflake = new Snowflake();
@@ -17,6 +19,7 @@ public class ArticleService {
     public ArticleService(ArticleRepository articleRepository) {
         this.articleRepository = articleRepository;
     }
+
 
     @Transactional
     public ArticleResponse create(final ArticleCreateRequest request) {
