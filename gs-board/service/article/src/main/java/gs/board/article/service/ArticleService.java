@@ -1,9 +1,11 @@
 package gs.board.article.service;
 
+import gs.board.article.controller.command.ArticlePageCondition;
 import gs.board.article.entity.Article;
 import gs.board.article.repository.ArticleRepository;
 import gs.board.article.service.request.ArticleCreateRequest;
 import gs.board.article.service.request.ArticleUpdateRequest;
+import gs.board.article.service.response.ArticlePageResponse;
 import gs.board.article.service.response.ArticleResponse;
 import kuke.board.common.snowflake.Snowflake;
 import lombok.extern.slf4j.Slf4j;
@@ -47,5 +49,19 @@ public class ArticleService {
     @Transactional
     public void delete(final Long articleId) {
         articleRepository.deleteById(articleId);
+    }
+
+    @Transactional(readOnly = true)
+    public ArticlePageResponse readAll(final ArticlePageCondition condition) {
+        return ArticlePageResponse.of(
+                articleRepository.findAllByBoardId(
+                                condition.getBoardId(),
+                                (condition.getPage() - 1) * condition.getPageSize(),
+                                condition.getPageSize()).stream()
+                        .map(ArticleResponse::from)
+                        .toList(),
+                articleRepository.countAllByBoardIdAndLimit(condition.getBoardId(),
+                        PageLimitCalculator.calculatePageLimit(condition.getPage(), condition.getPageSize(), 10L))
+        );
     }
 }

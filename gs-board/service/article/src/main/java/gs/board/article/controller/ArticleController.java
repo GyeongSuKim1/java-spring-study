@@ -1,8 +1,10 @@
 package gs.board.article.controller;
 
+import gs.board.article.controller.command.ArticlePageCondition;
 import gs.board.article.service.ArticleService;
 import gs.board.article.service.request.ArticleCreateRequest;
 import gs.board.article.service.request.ArticleUpdateRequest;
+import gs.board.article.service.response.ArticlePageResponse;
 import gs.board.article.service.response.ArticleResponse;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,6 +25,11 @@ public class ArticleController {
     @GetMapping("/v1/article/{articleId}")
     public ArticleResponse read(@PathVariable(name = "articleId") final Long articleId) {
         return articleService.read(articleId);
+    }
+
+    @GetMapping("/v1/article")
+    public ArticlePageResponse readAll(final ArticlePageCondition condition) {
+        return articleService.readAll(condition);
     }
 
     @PostMapping("/v1/article")

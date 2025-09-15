@@ -1,0 +1,13 @@
+package gs.board.article.controller.command;
+
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class ArticlePageCondition {
+    private Long boardId;
+    private Long page;
+    private Long pageSize;
+}
