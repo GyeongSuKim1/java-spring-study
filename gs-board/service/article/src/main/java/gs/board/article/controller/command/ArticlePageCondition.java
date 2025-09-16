@@ -10,4 +10,10 @@ public class ArticlePageCondition {
     private Long boardId;
     private Long page;
     private Long pageSize;
+
+    public ArticlePageCondition(Long boardId, Long page, Long pageSize) {
+        this.boardId = boardId;
+        this.page = page;
+        this.pageSize = pageSize;
+    }
 }
