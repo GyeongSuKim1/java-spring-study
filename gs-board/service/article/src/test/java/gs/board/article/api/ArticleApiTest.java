@@ -1,5 +1,6 @@
 package gs.board.article.api;
 
+import gs.board.article.service.response.ArticlePageResponse;
 import gs.board.article.service.response.ArticleResponse;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -33,6 +34,18 @@ public class ArticleApiTest {
         delete(224790700499861504L);
     }
 
+    @Test
+    void readAllTest() {
+        final ArticlePageCondition condition = new ArticlePageCondition(1L, 50000L, 30L);
+        final ArticlePageResponse response = readAll(condition);
+        System.out.println("response.getArticleCount() = " + response.getArticleCount());
+
+        System.out.println();
+        for (ArticleResponse article : response.getArticles()) {
+            System.out.println("article.getArticleId() = " + article.getArticleId());
+        }
+    }
+
     ArticleResponse create(final ArticleCreateRequest request) {
         return restClient.post()
                 .uri("/v1/article")
@@ -62,8 +75,19 @@ public class ArticleApiTest {
                 .retrieve();
     }
 
-    @Getter
-    @AllArgsConstructor
+    ArticlePageResponse readAll(final ArticlePageCondition condition) {
+        return restClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/v1/article")
+                        .queryParam("boardId", condition.getBoardId())
+                        .queryParam("page", condition.getPage())
+                        .queryParam("pageSize", condition.getPageSize())
+                        .build()
+                ).retrieve()
+                .body(ArticlePageResponse.class);
+    }
+
+    @Getter @AllArgsConstructor
     static class ArticleCreateRequest {
         private String title;
         private String content;
@@ -71,10 +95,16 @@ public class ArticleApiTest {
         private Long boardId;
     }
 
-    @Getter
-    @AllArgsConstructor
+    @Getter @AllArgsConstructor
     static class ArticleUpdateRequest {
         private String title;
         private String content;
+    }
+
+    @Getter @AllArgsConstructor
+    public class ArticlePageCondition {
+        private Long boardId;
+        private Long page;
+        private Long pageSize;
     }
 }
