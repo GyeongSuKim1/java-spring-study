@@ -1,5 +1,7 @@
 package gs.board.article.service;
 
+import ch.qos.logback.core.util.StringUtil;
+import gs.board.article.controller.condition.ArticleInfiniteScrollCondition;
 import gs.board.article.controller.condition.ArticlePageCondition;
 import gs.board.article.entity.Article;
 import gs.board.article.repository.ArticleRepository;
@@ -11,6 +13,11 @@ import kuke.board.common.snowflake.Snowflake;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
+
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -63,5 +70,16 @@ public class ArticleService {
                 articleRepository.countAllByBoardIdAndLimit(condition.getBoardId(),
                         PageLimitCalculator.calculatePageLimit(condition.getPage(), condition.getPageSize(), 10L))
         );
+    }
+
+    @Transactional(readOnly = true)
+    public List<ArticleResponse> readAllInfiniteScroll(final ArticleInfiniteScrollCondition condition) {
+        final List<Article> articles = Objects.isNull(condition.getLastArticleId()) ?
+                articleRepository.findAllInfiniteScroll(condition.getBoardId(), condition.getPageSize()) :
+                articleRepository.findAllInfiniteScroll(condition.getBoardId(), condition.getPageSize(), condition.getLastArticleId());
+
+        return articles.stream()
+                .map(ArticleResponse::from)
+                .toList();
     }
 }

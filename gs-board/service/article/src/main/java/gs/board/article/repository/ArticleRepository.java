@@ -15,4 +15,8 @@ public interface ArticleRepository {
     List<Article> findAllByBoardId(final Long boardId, final Long offset, final Long limit);
 
     Long countAllByBoardIdAndLimit(final Long boardId, final Long limit);
+
+    List<Article> findAllInfiniteScroll(final Long boardId, final Long limit);
+
+    List<Article> findAllInfiniteScroll(final Long boardId,final Long limit, final Long lastArticleId);
 }

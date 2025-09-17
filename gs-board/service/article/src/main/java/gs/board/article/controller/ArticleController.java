@@ -1,5 +1,6 @@
 package gs.board.article.controller;
 
+import gs.board.article.controller.condition.ArticleInfiniteScrollCondition;
 import gs.board.article.controller.condition.ArticlePageCondition;
 import gs.board.article.service.ArticleService;
 import gs.board.article.service.request.ArticleCreateRequest;
@@ -13,6 +14,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 public class ArticleController {
@@ -30,6 +33,11 @@ public class ArticleController {
     @GetMapping("/v1/article")
     public ArticlePageResponse readAll(final ArticlePageCondition condition) {
         return articleService.readAll(condition);
+    }
+
+    @GetMapping("/v1/article/infinite-scroll")
+    public List<ArticleResponse> readAllInfiniteScroll(final ArticleInfiniteScrollCondition condition) {
+        return articleService.readAllInfiniteScroll(condition);
     }
 
     @PostMapping("/v1/article")

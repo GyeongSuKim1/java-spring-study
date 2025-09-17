@@ -38,4 +38,14 @@ public class ArticleRepositoryImpl implements ArticleRepository{
     public Long countAllByBoardIdAndLimit(final Long boardId, final Long limit) {
         return jpaArticleRepository.countAllByBoardIdAndLimit(boardId, limit);
     }
+
+    @Override
+    public List<Article> findAllInfiniteScroll(final Long boardId, final Long limit) {
+        return jpaArticleRepository.findAllInfiniteScroll(boardId, limit);
+    }
+
+    @Override
+    public List<Article> findAllInfiniteScroll(final Long boardId, final Long limit, final Long lastArticleId) {
+        return jpaArticleRepository.findAllInfiniteScroll(boardId, limit, lastArticleId);
+    }
 }
