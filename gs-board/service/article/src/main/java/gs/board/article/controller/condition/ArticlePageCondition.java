@@ -1,4 +1,4 @@
-package gs.board.article.controller.command;
+package gs.board.article.controller.condition;
 
 import lombok.AccessLevel;
 import lombok.Getter;

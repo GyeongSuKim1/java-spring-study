@@ -1,6 +1,6 @@
 package gs.board.article.service;
 
-import gs.board.article.controller.command.ArticlePageCondition;
+import gs.board.article.controller.condition.ArticlePageCondition;
 import gs.board.article.entity.Article;
 import gs.board.article.repository.ArticleRepository;
 import gs.board.article.service.request.ArticleCreateRequest;
