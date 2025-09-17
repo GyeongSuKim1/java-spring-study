@@ -13,6 +13,9 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+/**
+ * 작업전 데이터 주입 필수 @ @
+ */
 @SpringBootTest
 public class DataInitializer {
     @PersistenceContext
