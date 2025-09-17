@@ -5,7 +5,10 @@ import gs.board.article.service.response.ArticleResponse;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.junit.jupiter.api.Test;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.client.RestClient;
+
+import java.util.List;
 
 public class ArticleApiTest {
     RestClient restClient = RestClient.create("http://localhost:9000");
@@ -43,6 +46,25 @@ public class ArticleApiTest {
         System.out.println();
         for (ArticleResponse article : response.getArticles()) {
             System.out.println("article.getArticleId() = " + article.getArticleId());
+        }
+    }
+
+    @Test
+    void readAllInfiniteScrollTest() {
+        final Long boardId = 1L;
+        final Long pageSize = 30L;
+
+        final ArticleInfiniteScrollCondition firstCondition = new ArticleInfiniteScrollCondition(boardId, pageSize, null);
+        final List<ArticleResponse> firstPageArticles = readAllInfiniteScroll(firstCondition);
+        for (ArticleResponse firstPageArticle : firstPageArticles) {
+            System.out.println("firstPageArticle = " + firstPageArticle);
+        }
+
+        final Long lastArticleId = firstPageArticles.getLast().getArticleId();
+        final ArticleInfiniteScrollCondition secondPageCondition = new ArticleInfiniteScrollCondition(boardId, pageSize, lastArticleId);
+        final List<ArticleResponse> secondPageArticles = readAllInfiniteScroll(secondPageCondition);
+        for (ArticleResponse secondPageArticle : secondPageArticles) {
+            System.out.println("secondPageArticle = " + secondPageArticle);
         }
     }
 
@@ -87,7 +109,21 @@ public class ArticleApiTest {
                 .body(ArticlePageResponse.class);
     }
 
-    @Getter @AllArgsConstructor
+    List<ArticleResponse> readAllInfiniteScroll(final ArticleInfiniteScrollCondition condition) {
+        return restClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/v1/article/infinite-scroll")
+                        .queryParam("boardId", condition.getBoardId())
+                        .queryParam("pageSize", condition.getPageSize())
+                        .queryParam("lastArticleId", condition.getLastArticleId())
+                        .build()
+                ).retrieve()
+                .body(new ParameterizedTypeReference<List<ArticleResponse>>() {
+                });
+    }
+
+    @Getter
+    @AllArgsConstructor
     static class ArticleCreateRequest {
         private String title;
         private String content;
@@ -95,16 +131,26 @@ public class ArticleApiTest {
         private Long boardId;
     }
 
-    @Getter @AllArgsConstructor
+    @Getter
+    @AllArgsConstructor
     static class ArticleUpdateRequest {
         private String title;
         private String content;
     }
 
-    @Getter @AllArgsConstructor
+    @Getter
+    @AllArgsConstructor
     public class ArticlePageCondition {
         private Long boardId;
         private Long page;
         private Long pageSize;
+    }
+
+    @Getter
+    @AllArgsConstructor
+    public class ArticleInfiniteScrollCondition {
+        private Long boardId;
+        private Long pageSize;
+        private Long lastArticleId;
     }
 }
